@@ -23,46 +23,43 @@
 -----------------------------------------------------------------------
 
 library IEEE;
-	use IEEE.STD_LOGIC_1164.ALL;
-	use IEEE.STD_LOGIC_ARITH.ALL;
-	use IEEE.STD_LOGIC_UNSIGNED.ALL;
+   use IEEE.STD_LOGIC_1164.ALL;
+   use IEEE.STD_LOGIC_ARITH.ALL;
+   use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 library UNISIM;
-	use UNISIM.VComponents.all;
+   use UNISIM.VComponents.all;
 
 entity m6810 is
-    Port ( clk			: in  	std_logic;
-			  rst			: in		std_logic;
-           address	: in  	std_logic_vector (6 downto 0);
-           cs			: in  	std_logic;
-           rw			: in  	std_logic;
-           data_in	: in  	std_logic_vector (7 downto 0);
-           data_out	: out  	std_logic_vector (7 downto 0));
+    Port ( clk       : in     std_logic;
+           rst       : in     std_logic;
+           address   : in     std_logic_vector (6 downto 0);
+           cs        : in     std_logic;
+           rw        : in     std_logic;
+           data_in   : in     std_logic_vector (7 downto 0);
+           data_out  : out    std_logic_vector (7 downto 0));
 end m6810;
 
 architecture rtl of m6810 is
-	signal we : std_logic;
---	signal dp : std_logic;
+   signal we : std_logic;
 begin
-
+   
   ROM: RAMB16_S9
-    port map (
-	  do     => data_out,
-	  --dop(0) => dp,
-	  addr(6 downto 0)   => address,
-	  addr(10 downto 7) => "0000",
-	  clk    => clk,
-	  di     => data_in,
-	  dip(0) => '0',
-	  en     => cs,
-	  ssr    => rst,
-	  we     => we
-	);
+    port map ( do                => data_out,
+               addr(6 downto 0)  => address,
+               addr(10 downto 7) => "0000",
+               clk               => clk,
+               di                => data_in,
+               dip(0)            => '0',
+               en                => cs,
+               ssr               => rst,
+               we                => we
+               );
 
-	m6810 : process ( rw )
-	begin
-		 we    <= not rw;
-	end process;
-
+   m6810 : process ( rw )
+   begin
+      we <= not rw;
+   end process;
+   
 end architecture rtl;
 

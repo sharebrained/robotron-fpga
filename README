@@ -38,3 +38,13 @@ make_sound_rom.py: produces rom_snd_blocks.vhd, containing VHDL ROM
 
 Please respect Williams Electronics' copyright and do not post any VHDL
 or .bit files containing their binary code.
+
+=== Contributing ===
+
+Contributions are welcome!
+
+Before you begin, make sure your Xilinx ISE text editor (or other
+editor) is configured for spaces instead of tabs, and that the number
+of spaces per tab is set to 3. Why 3? Well, that's what the WebPack
+defaults to. I'd prefer four or two, but am willing to let Xilinx
+have their eccentricities...
