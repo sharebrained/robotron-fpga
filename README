@@ -1,0 +1,40 @@
+robotron-fpga
+by ShareBrained Technology
+
+The latest version of this repository can be found at:
+
+    https://github.com/sharebrained/robotron-fpga
+
+=== Description ===
+
+An FPGA implementation of the classic Robotron: 2084 video game. At the
+moment, only the sound board is implemented.
+
+Do not use my code as a reference to learn VHDL. I wrote it a couple of
+years ago, and I've learned quite a bit about VHDL since then. There are
+some dodgy bits in this code...
+
+=== Requirements ===
+
+- Williams Robotron: 2084 sound ROM binary, often named "robotron.snd".
+- Python 2.6 to transform ROM file(s) into VHDL ROM blocks.
+- Xilinx ISE WebPack 13.2 to compile VHDL and generate bit file.
+- Digilent Adept or other JTAG tool to load bit file into device.
+- RC lowpass filter on the device's PWM audio output, or an eight-bit
+  DAC attached to the 8-bit audio output pins of the device.
+
+=== Tools ===
+
+dac_out_wave.py: translates the text file output of robotron_test.vhd
+    into a WAV file that can be played.
+
+make_sound_rom.py: produces rom_snd_blocks.vhd, containing VHDL ROM
+    blocks, from the contents of a robotron.snd ROM file. The
+    robotron.snd file is not provided due to copyright on the original
+    ROM binaries produced by Williams. I happen to have a physical
+    instance of the ROM board, so I'm in the clear. :-)
+
+=== Notes ===
+
+Please respect Williams Electronics' copyright and do not post any VHDL
+or .bit files containing their binary code.
