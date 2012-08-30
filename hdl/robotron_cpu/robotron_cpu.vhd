@@ -437,6 +437,11 @@ architecture Behavioral of robotron_cpu is
     signal decoder_6_in : std_logic_vector(8 downto 0);
     signal video_prom_address : std_logic_vector(13 downto 6);
     
+    -------------------------------------------------------------------
+    
+    signal debug_blt_source_address : std_logic_vector(15 downto 0) := (others => '0');
+    signal debug_last_mpu_address   : std_logic_vector(15 downto 0) := (others => '0');
+    
 begin
 
     dcm_12m: DCM_SP
@@ -745,13 +750,13 @@ begin
                         blt_reg_data_in <= mpu_data_in;
                     
                         -- NOTE: To display BLT source address:
-                        --if address(2 downto 0) = "010" then
-                        --    led_bcd_in(15 downto 8) <= mpu_data_in;
-                        --end if;
-                        --
-                        --if address(2 downto 0) = "011" then
-                        --    led_bcd_in(7 downto 0) <= mpu_data_in;
-                        --end if;
+                        if address(2 downto 0) = "010" then
+                            debug_blt_source_address(15 downto 8) <= mpu_data_in;
+                        end if;
+                        
+                        if address(2 downto 0) = "011" then
+                            debug_blt_source_address(7 downto 0) <= mpu_data_in;
+                        end if;
                     end if;
                 
                     if rom_pia_access then
@@ -812,8 +817,7 @@ begin
            to_std_logic(widget_pia_access) &
            to_std_logic(blt_register_access);
            
-    led_bcd_in(15 downto 4) <= mpu_address(15 downto 4);
-    led_bcd_in(3 downto 0) <= rom_led_digit;
+    led_bcd_in <= debug_blt_source_address;
     
     -------------------------------------------------------------------
 
@@ -1005,6 +1009,10 @@ begin
             mpu_halted <= BS = '1' and BA = '1';
             mpu_write <= R_W_N = '0' and BA = '0';
             mpu_read <= R_W_N = '1' and BA = '0';
+            
+            if BA = '0' then
+                debug_last_mpu_address <= A;
+            end if;
         end if;
     end process;
     
