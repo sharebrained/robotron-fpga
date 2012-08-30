@@ -191,6 +191,20 @@ architecture Behavioral of robotron_cpu is
         );
     end component;
 
+    component decoder_4 is
+        port(
+            address     : in    std_logic_vector(8 downto 0);
+            data        : out   std_logic_vector(7 downto 0)
+        );
+    end component;
+
+    component decoder_6 is
+        port(
+            address     : in    std_logic_vector(8 downto 0);
+            data        : out   std_logic_vector(7 downto 0)
+        );
+    end component;
+
     signal reset_request            : std_logic;
     signal reset_counter            : unsigned(7 downto 0);
     signal reset                    : std_logic;
@@ -222,8 +236,6 @@ architecture Behavioral of robotron_cpu is
     
     signal horizontal_sync          : std_logic;
     signal vertical_sync            : std_logic;
-    
-    signal video_prom_address       : std_logic_vector(15 downto 0) := (others => '0');
     
     -------------------------------------------------------------------
     
@@ -410,6 +422,18 @@ architecture Behavioral of robotron_cpu is
     type color_table_t is array(0 to 15) of pixel_color_t;
     signal color_table : color_table_t;
     
+    signal pixel_nibbles : std_logic_vector(7 downto 0);
+    signal pixel_byte_l : std_logic_vector(7 downto 0);
+    signal pixel_byte_h : std_logic_vector(7 downto 0);
+    
+    -------------------------------------------------------------------
+
+    signal decoder_4_in : std_logic_vector(8 downto 0);
+    signal pseudo_address : std_logic_vector(15 downto 8);
+    
+    signal decoder_6_in : std_logic_vector(8 downto 0);
+    signal video_prom_address : std_logic_vector(13 downto 6);
+    
 begin
     
     -- clock    0   1   2   3   4   5   6   7   8   9   10  11
@@ -509,6 +533,9 @@ begin
     
     video_counter_value <= std_logic_vector(video_address(13 downto 8)) & "00";
     
+    decoder_4_in <= screen_control & address(15 downto 8);
+    decoder_6_in <= screen_control & std_logic_vector(video_address(13 downto 6));
+
     process(clock)
     begin
         if rising_edge(clock) then
@@ -531,13 +558,83 @@ begin
             widget_pia_cs <= '0';
             widget_pia_write <= '0';
             
+            if clock_12_phase( 0) = '1' then
+                memory_address <= "00" & video_prom_address &
+                                  std_logic_vector(video_address(4 downto 0)) & "0";
+            end if;
+            
+            if clock_12_phase( 2) = '1' then
+                memory_address <= "01" & video_prom_address &
+                                  std_logic_vector(video_address(4 downto 0)) & "0";
+            end if;
+            
+            if clock_12_phase( 4) = '1' then
+                memory_address <= "10" & video_prom_address &
+                                  std_logic_vector(video_address(4 downto 0)) & "0";
+            end if;
+            
+            if clock_12_phase( 6) = '1' then
+                memory_address <= "00" & video_prom_address &
+                                  std_logic_vector(video_address(4 downto 0)) & "1";
+            end if;
+            
+            if clock_12_phase( 8) = '1' then
+                memory_address <= "01" & video_prom_address &
+                                   std_logic_vector(video_address(4 downto 0)) & "1";
+            end if;
+            
+            if clock_12_phase(10) = '1' then
+                memory_address <= "10" & video_prom_address &
+                                  std_logic_vector(video_address(4 downto 0)) & "1";
+            end if;
+            
+            if clock_12_phase( 0) = '1' or
+               clock_12_phase( 2) = '1' or
+               clock_12_phase( 4) = '1' or
+               clock_12_phase( 6) = '1' or
+               clock_12_phase( 8) = '1' or
+               clock_12_phase(10) = '1' then
+                memory_output_enable <= true;
+                ram_enable <= true;
+                ram_lower_enable <= true;
+                ram_upper_enable <= true;
+
+                vgaRed <= pixel_byte_h(2 downto 0);
+                vgaGreen <= pixel_byte_h(5 downto 3);
+                vgaBlue <= pixel_byte_h(7 downto 6);
+            end if;
+            
+            if clock_12_phase( 1) = '1' or
+               clock_12_phase( 3) = '1' or
+               clock_12_phase( 5) = '1' or
+               clock_12_phase( 7) = '1' or
+               clock_12_phase( 9) = '1' or
+               clock_12_phase(11) = '1' then
+                pixel_nibbles <= memory_data_in;
+
+                pixel_byte_l <= color_table(to_integer(unsigned(pixel_nibbles(3 downto 0))));
+                pixel_byte_h <= color_table(to_integer(unsigned(pixel_nibbles(7 downto 4))));
+
+                vgaRed <= pixel_byte_l(2 downto 0);
+                vgaGreen <= pixel_byte_l(5 downto 3);
+                vgaBlue <= pixel_byte_l(7 downto 6);
+            end if;
+            
             -- BLT-only cycle
             -- NOTE: the next cycle must be a read if coming from RAM, since the
             -- RAM WE# needs to deassert for a time in order for another write to
             -- take place.
             if clock_12_phase(1) = '1' then
                 if mpu_halted then
-                    if ram_access or rom_access then
+                    if ram_access then
+                        if pseudo_address(15 downto 14) = "11" then
+                            memory_address <= address;
+                        else
+                            memory_address <= pseudo_address(15 downto 14) &
+                                              address(7 downto 0) &
+                                              pseudo_address(13 downto 8);
+                        end if;
+                    elsif rom_access or cmos_access or color_table_access then
                         memory_address <= address;
                     end if;
 
@@ -568,7 +665,15 @@ begin
             -- take place.
             if clock_12_phase(7) = '1' then
                 if not mpu_halted then
-                    if ram_access or rom_access or cmos_access or color_table_access then
+                    if ram_access then
+                        if pseudo_address(15 downto 14) = "11" then
+                            memory_address <= address;
+                        else
+                            memory_address <= pseudo_address(15 downto 14) &
+                                              address(7 downto 0) &
+                                              pseudo_address(13 downto 8);
+                        end if;
+                    elsif rom_access or cmos_access or color_table_access then
                         memory_address <= address;
                     end if;
                 
@@ -665,6 +770,22 @@ begin
     led_bcd_in(15 downto 4) <= mpu_address(15 downto 4);
     led_bcd_in(3 downto 0) <= rom_led_digit;
     
+    -------------------------------------------------------------------
+
+    horizontal_decoder: decoder_4
+        port map(
+            address => decoder_4_in,
+            data => pseudo_address
+        );
+        
+    -------------------------------------------------------------------
+
+    vertical_decoder: decoder_6
+        port map(
+            address => decoder_6_in,
+            data => video_prom_address
+        );
+        
     -------------------------------------------------------------------
     
     blt_halt_ack <= mpu_halted;
@@ -879,10 +1000,6 @@ begin
     Hsync <= not horizontal_sync;
     Vsync <= not vertical_sync;
     
-    vgaRed <= std_logic_vector(video_address(1 downto 0) & video_address(0));
-    vgaGreen <= std_logic_vector(video_address(3 downto 2) & video_address(2));
-    vgaBlue <= std_logic_vector(video_address(5 downto 4));
-
     -------------------------------------------------------------------
 
     DP <= led_dp;
