@@ -7,23 +7,31 @@ The latest version of this repository can be found at:
 
 === Description ===
 
-An FPGA implementation of the classic Robotron: 2084 video game. At the
-moment, only the sound board is implemented.
-
-Do not use my code as a reference to learn VHDL. I wrote it a couple of
-years ago, and I've learned quite a bit about VHDL since then. There are
-some dodgy bits in this code...
+An FPGA implementation of the classic Robotron: 2084 video game. Both the
+sound board and CPU/interface boards are implemented, but are in separate
+sub-projects at the moment.
 
 === Requirements ===
 
-- Williams Robotron: 2084 sound ROM binary, often named "robotron.snd".
+- Digilent Nexys 2 Spartan-3E FPGA development board.
+- Williams Robotron: 2084 ROM binaries, often named "robotron.s??".
 - Python 2.6 to transform ROM file(s) into VHDL ROM blocks.
-- Xilinx ISE WebPack 13.2 to compile VHDL and generate bit file.
+- Xilinx ISE WebPack 13.4 to compile VHDL and generate bit file.
 - Digilent Adept or other JTAG tool to load bit file into device.
+- VGA monitor.
 - RC lowpass filter on the device's PWM audio output, or an eight-bit
   DAC attached to the 8-bit audio output pins of the device.
 
 === Tools ===
+
+make_rom_file.py: translates a set of Robotron ROM board ROM files
+    (like those you would use with the MAME arcade emulator) into a
+    binary file that can be loaded into the flash device on the Digilent
+    FPGA board.
+
+make_decoder_vhdl.py: translates a decoder.4 or decoder.6 file (data
+    dumped from decoder PROMs on the Robotron CPU board) into a VHDL
+    file used by the robotron_cpu project.
 
 dac_out_wave.py: translates the text file output of robotron_test.vhd
     into a WAV file that can be played.
@@ -43,8 +51,32 @@ or .bit files containing their binary code.
 
 Contributions are welcome!
 
-Before you begin, make sure your Xilinx ISE text editor (or other
-editor) is configured for spaces instead of tabs, and that the number
-of spaces per tab is set to 3. Why 3? Well, that's what the WebPack
-defaults to. I'd prefer four or two, but am willing to let Xilinx
-have their eccentricities...
+License
+=======
+
+This hardware design is licensed under a
+[Creative Commons Attribution-ShareAlike 3.0 Unported License]
+(http://creativecommons.org/licenses/by-sa/3.0/).
+
+The associated software is provided under the GNU Public License, 
+version 3:
+
+This project is free software: you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This project is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this project. If not, see <http://www.gnu.org/licenses/>.
+
+Contact
+=======
+
+ShareBrained Technology, Inc.
+
+<http://www.sharebrained.com/>
