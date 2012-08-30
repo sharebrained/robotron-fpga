@@ -509,9 +509,6 @@ begin
     mpu_firq <= '0';
     mpu_nmi <= '0';
     
-    --AUTO_UP <= SW(0);
-    --ADVANCE <= not BTN(3);
-    
     address <= blt_address_out when mpu_halted else
                mpu_address;
     write <= blt_write when mpu_halted else
@@ -549,17 +546,17 @@ begin
     -- CMOS "nonvolatile" RAM: read/write: CC00 - CFFF
     cmos_access <= std_match(address, "110011----------");
     
-    SLAM <= SW(6);
-    R_COIN <= SW(5);
-    C_COIN <= SW(4);
-    L_COIN <= SW(3);
-    H_S_RESET <= SW(2);
-    ADVANCE <= SW(1);
-    AUTO_UP <= SW(0);
+    SLAM <= not SW(6);
+    R_COIN <= not SW(5);
+    C_COIN <= not SW(4);
+    L_COIN <= not SW(3);
+    H_S_RESET <= not SW(2);
+    ADVANCE <= not SW(1);
+    AUTO_UP <= not SW(0);
     
-    PLAYER_1_START <= BTN(3);
-    FIRE_LEFT_1 <= BTN(2);
-    FIRE_RIGHT_1 <= BTN(1);
+    PLAYER_1_START <= not BTN(3);
+    FIRE_LEFT_1 <= not BTN(2);
+    FIRE_RIGHT_1 <= not BTN(1);
     
     video_counter_value <= std_logic_vector(video_address(13 downto 8)) & "00";
     
