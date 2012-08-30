@@ -1146,9 +1146,9 @@ begin
     -------------------------------------------------------------------
     -- LED numeric display
     
-    process(clock_50m)
+    process(clock)
     begin
-        if rising_edge(clock_50m) then
+        if rising_edge(clock) then
             led_counter <= led_counter + 1;
         end if;
     end process;
