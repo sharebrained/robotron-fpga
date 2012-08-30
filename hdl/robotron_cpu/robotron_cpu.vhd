@@ -512,17 +512,30 @@ begin
     process(clock)
     begin
         if rising_edge(clock) then
+            ram_enable <= false;
+            ram_lower_enable <= false;
+            ram_upper_enable <= false;
+            
+            flash_enable <= false;
+            
+            memory_output_enable <= false;
+            memory_write <= false;
+            memory_data_out <= (others => '0');
+            
+            blt_reg_cs <= '0';
+            blt_blt_ack <= '0';
+            
+            rom_pia_cs <= '0';
+            rom_pia_write <= '0';
+            
+            widget_pia_cs <= '0';
+            widget_pia_write <= '0';
+            
+            -- BLT-only cycle
+            -- NOTE: the next cycle must be a read if coming from RAM, since the
+            -- RAM WE# needs to deassert for a time in order for another write to
+            -- take place.
             if clock_12_phase(1) = '1' then
-                ram_enable <= false;
-                ram_lower_enable <= false;
-                ram_upper_enable <= false;
-                
-                flash_enable <= false;
-                
-                memory_output_enable <= false;
-                memory_write <= false;
-                memory_data_out <= (others => '0');
-                
                 if mpu_halted then
                     if ram_access or rom_access then
                         memory_address <= address;
@@ -552,33 +565,11 @@ begin
                 end if;
             end if;
             
-            if clock_12_phase(2) = '1' then
-                ram_enable <= false;
-                ram_lower_enable <= false;
-                ram_upper_enable <= false;
-                
-                flash_enable <= false;
-                
-                memory_output_enable <= false;
-                memory_write <= false;
-                memory_data_out <= (others => '0');
-                
-                blt_blt_ack <= '0';
-            end if;
-            
-            -----------------------------------------------------------
-            
+            -- MPU-only cycle
+            -- NOTE: the next cycle must be a read if coming from RAM, since the
+            -- RAM WE# needs to deassert for a time in order for another write to
+            -- take place.
             if clock_12_phase(7) = '1' then
-                ram_enable <= false;
-                ram_lower_enable <= false;
-                ram_upper_enable <= false;
-                
-                flash_enable <= false;
-                
-                memory_output_enable <= false;
-                memory_write <= false;
-                memory_data_out <= (others => '0');
-                
                 if not mpu_halted then
                     if ram_access or rom_access or cmos_access or color_table_access then
                         memory_address <= address;
@@ -645,24 +636,6 @@ begin
             end if;
             
             if clock_12_phase(8) = '1' then
-                ram_enable <= false;
-                ram_lower_enable <= false;
-                ram_upper_enable <= false;
-                
-                flash_enable <= false;
-                
-                memory_output_enable <= false;
-                memory_write <= false;
-                memory_data_out <= (others => '0');
-                
-                blt_reg_cs <= '0';
-                
-                rom_pia_cs <= '0';
-                rom_pia_write <= '0';
-                
-                widget_pia_cs <= '0';
-                widget_pia_write <= '0';
-                
                 if not mpu_halted then
                     if read then
                         if ram_access or rom_access or cmos_access then
