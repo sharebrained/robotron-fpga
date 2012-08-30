@@ -44,5 +44,8 @@
 /tools/robotron.snd
 /tools/rom_*_blocks.vhd
 
-/ROMs/
+/ROMs/decoder.4
+/ROMs/decoder.6
+/ROMs/robotron.sb?
+/ROMs/robotron.snd
 /sounds/
