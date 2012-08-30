@@ -543,11 +543,7 @@ begin
                     if rom_access then
                         flash_enable <= true;
                     end if;
-                end if;
-            end if;
-            
-            if clock_12_phase(2) = '1' then
-                if mpu_halted then
+
                     blt_blt_ack <= '1';
                 
                     if ram_access and write then
@@ -556,7 +552,7 @@ begin
                 end if;
             end if;
             
-            if clock_12_phase(3) = '1' then
+            if clock_12_phase(2) = '1' then
                 ram_enable <= false;
                 ram_lower_enable <= false;
                 ram_upper_enable <= false;
@@ -603,11 +599,7 @@ begin
                     if rom_access then
                         flash_enable <= true;
                     end if;
-                end if;
-            end if;
-            
-            if clock_12_phase(8) = '1' then
-                if not mpu_halted then
+
                     if blt_register_access and write then
                         blt_rs <= address(2 downto 0);
                         blt_reg_cs <= '1';
@@ -652,7 +644,7 @@ begin
                 end if;
             end if;
             
-            if clock_12_phase(9) = '1' then
+            if clock_12_phase(8) = '1' then
                 ram_enable <= false;
                 ram_lower_enable <= false;
                 ram_upper_enable <= false;
