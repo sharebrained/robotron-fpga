@@ -543,6 +543,7 @@ begin
 
                     if ram_access and write then
                         memory_data_out <= blt_data_out;
+                        memory_write <= true;
                     else
                         memory_output_enable <= true;
                     end if;
@@ -558,10 +559,6 @@ begin
                     end if;
 
                     blt_blt_ack <= '1';
-                
-                    if ram_access and write then
-                        memory_write <= true;
-                    end if;
                 end if;
             end if;
             
@@ -577,6 +574,7 @@ begin
                 
                     if (ram_access or cmos_access or color_table_access) and write then
                         memory_data_out <= mpu_data_in;
+                        memory_write <= true;
                     else
                         memory_output_enable <= true;
                     end if;
@@ -604,10 +602,6 @@ begin
                         --if address(2 downto 0) = "011" then
                         --    led_bcd_in(7 downto 0) <= mpu_data_in;
                         --end if;
-                    end if;
-                
-                    if (ram_access or cmos_access or color_table_access) and write then
-                        memory_write <= true;
                     end if;
                 
                     if rom_pia_access then
