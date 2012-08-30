@@ -17,12 +17,13 @@ Both appear to function well.
 The MC6809E breakout board has been fabricated, but has some design issues
 that need to be addressed. The primary issue is the lack of pull-up/-down
 resistors on key MC6809E signals, to keep the processor in a RESET state
-until the FPGA board is ready to work with the MC6809E.
+until the FPGA board is ready to work with the MC6809E. I also screwed up
+and put the NEXYS2 connector on the "bottom side" of the board. Smooth!
 
 Requirements
 ============
 
-* Digilent Nexys 2 Spartan-3E FPGA development board.
+* Digilent NEXYS2 Spartan-3E FPGA development board.
 
     This is the board I've done my development on, and is a good choice
     because it has plenty of inputs, a VGA output connector, many switches
