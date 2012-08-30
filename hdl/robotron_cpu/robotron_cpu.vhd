@@ -670,11 +670,11 @@ begin
                 end if;
             end if;
             
-            -- BLT-only cycle
+            -- BLT-only cycles
             -- NOTE: the next cycle must be a read if coming from RAM, since the
             -- RAM WE# needs to deassert for a time in order for another write to
             -- take place.
-            if clock_12_phase(1) = '1' then
+            if clock_12_phase(11) = '1' or clock_12_phase(1) = '1' then
                 if mpu_halted then
                     if ram_access then
                         if pseudo_address(15 downto 14) = "11" then
