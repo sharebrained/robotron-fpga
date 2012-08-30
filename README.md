@@ -5,9 +5,8 @@ An FPGA implementation of the classic Robotron: 2084 video game. Both the
 sound board and CPU/interface boards are implemented, but are in separate
 sub-projects at the moment.
 
-The latest version of this repository can be found at:
-
-    https://github.com/sharebrained/robotron-fpga
+The latest version of this repository can be found at
+https://github.com/sharebrained/robotron-fpga
 
 Status
 ======
