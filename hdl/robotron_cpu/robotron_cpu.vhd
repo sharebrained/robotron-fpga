@@ -213,6 +213,9 @@ architecture Behavioral of robotron_cpu is
     signal reset                    : std_logic;
 
     signal clock_50m                : std_logic;
+    signal clock_50m_0              : std_logic;
+    signal clock_50m_fb             : std_logic;
+
     signal clock                    : std_logic;
     
     signal clock_12_phase           : unsigned(11 downto 0) := (0 => '1', others => '0');
@@ -463,8 +466,12 @@ begin
         )
         port map(
             CLKFX => clock,   -- DCM CLK synthesis out (M/D)
-            CLKIN => clock_50m   -- Clock input (from IBUFG, BUFG or DCM)
+            CLKIN => clock_50m,  -- Clock input (from IBUFG, BUFG or DCM)
+            CLK0 => clock_50m_0,
+            CLKFB => clock_50m_fb
         );
+        
+    clock_50m_fb <= clock_50m_0;
 
     -- clock    0   1   2   3   4   5   6   7   8   9   10  11
     -- Q        0   0   0   1   1   1   1   1   1   0   0   0
