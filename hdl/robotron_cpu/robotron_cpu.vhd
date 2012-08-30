@@ -26,6 +26,9 @@ library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
 
+library unisim;
+    use unisim.vcomponents.all;
+
 entity robotron_cpu is
     port(
         CLK		        : in    std_logic;
@@ -211,8 +214,6 @@ architecture Behavioral of robotron_cpu is
 
     signal clock_50m                : std_logic;
     signal clock                    : std_logic;
-    
-    signal clock_50m_div_12m        : unsigned(3 downto 0) := "0011";
     
     signal clock_12_phase           : unsigned(11 downto 0) := (0 => '1', others => '0');
     
@@ -435,7 +436,29 @@ architecture Behavioral of robotron_cpu is
     signal video_prom_address : std_logic_vector(13 downto 6);
     
 begin
-    
+
+    dcm_12m: DCM_SP
+        generic map (
+            CLKDV_DIVIDE => 2.0,    --  Divide by: 1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5
+                                    --     7.0,7.5,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0 or 16.0
+            CLKFX_DIVIDE => 25,     --  Can be any interger from 1 to 32
+            CLKFX_MULTIPLY => 6,    --  Can be any integer from 1 to 32
+            CLKIN_DIVIDE_BY_2 => false, -- TRUE/FALSE to enable CLKIN divide by two feature
+            CLKIN_PERIOD => 20.0,       -- Specify period of input clock
+            CLKOUT_PHASE_SHIFT => "NONE",   -- Specify phase shift of "NONE", "FIXED" or "VARIABLE" 
+            CLK_FEEDBACK => "1X",           -- Specify clock feedback of "NONE", "1X" or "2X" 
+            DESKEW_ADJUST => "SYSTEM_SYNCHRONOUS",  -- "SOURCE_SYNCHRONOUS", "SYSTEM_SYNCHRONOUS" or
+                                                    -- an integer from 0 to 15
+            DLL_FREQUENCY_MODE => "LOW",    -- "HIGH" or "LOW" frequency mode for DLL
+            DUTY_CYCLE_CORRECTION => true,  -- Duty cycle correction, TRUE or FALSE
+            PHASE_SHIFT => 0,       -- Amount of fixed phase shift from -255 to 255
+            STARTUP_WAIT => true    -- Delay configuration DONE until DCM_SP LOCK, TRUE/FALSE
+        )
+        port map(
+            CLKFX => clock,   -- DCM CLK synthesis out (M/D)
+            CLKIN => clock_50m   -- Clock input (from IBUFG, BUFG or DCM)
+        );
+
     -- clock    0   1   2   3   4   5   6   7   8   9   10  11
     -- Q        0   0   0   1   1   1   1   1   1   0   0   0
     -- E        0   0   0   0   0   0   1   1   1   1   1   1
@@ -1006,18 +1029,6 @@ begin
     SEG <= led_segment;
     AN <= led_anode;
     
-    -------------------------------------------------------------------
-    -- 12MHz clock generator
-    
-    clock <= clock_50m_div_12m(0);
-    
-    process(clock_50m)
-    begin
-        if rising_edge(clock_50m) then
-            clock_50m_div_12m <= clock_50m_div_12m rol 1;
-        end if;
-    end process;
-
     -------------------------------------------------------------------
     -- 1MHz, 12-phase counter.
     
