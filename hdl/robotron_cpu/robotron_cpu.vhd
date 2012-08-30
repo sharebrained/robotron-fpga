@@ -238,6 +238,8 @@ architecture Behavioral of robotron_cpu is
     signal horizontal_sync          : std_logic;
     signal vertical_sync            : std_logic;
     
+    signal video_blank              : boolean := true;
+    
     -------------------------------------------------------------------
     
     signal led_bcd_in               : std_logic_vector(15 downto 0);
@@ -610,6 +612,14 @@ begin
                 memory_address <= "10" & video_prom_address &
                                   std_logic_vector(video_address(4 downto 0)) & "1";
             end if;
+
+            if clock_12_phase(5) = '1' then
+                if std_match(video_address(4 downto 0) & "1", "11-1-1") then
+                    video_blank <= true;
+                elsif std_match(video_address(4 downto 0) & "1", "0---11") then
+                    video_blank <= false;
+                end if;
+            end if;
             
             if clock_12_phase( 0) = '1' or
                clock_12_phase( 2) = '1' or
@@ -622,9 +632,15 @@ begin
                 ram_lower_enable <= true;
                 ram_upper_enable <= true;
 
-                vgaRed <= pixel_byte_h(2 downto 0);
-                vgaGreen <= pixel_byte_h(5 downto 3);
-                vgaBlue <= pixel_byte_h(7 downto 6);
+                if video_blank then
+                    vgaRed <= (others => '0');
+                    vgaGreen <= (others => '0');
+                    vgaBlue <= (others => '0');
+                else
+                    vgaRed <= pixel_byte_h(2 downto 0);
+                    vgaGreen <= pixel_byte_h(5 downto 3);
+                    vgaBlue <= pixel_byte_h(7 downto 6);
+                end if;
             end if;
             
             if clock_12_phase( 1) = '1' or
@@ -638,9 +654,15 @@ begin
                 pixel_byte_l <= color_table(to_integer(unsigned(pixel_nibbles(3 downto 0))));
                 pixel_byte_h <= color_table(to_integer(unsigned(pixel_nibbles(7 downto 4))));
 
-                vgaRed <= pixel_byte_l(2 downto 0);
-                vgaGreen <= pixel_byte_l(5 downto 3);
-                vgaBlue <= pixel_byte_l(7 downto 6);
+                if video_blank then
+                    vgaRed <= (others => '0');
+                    vgaGreen <= (others => '0');
+                    vgaBlue <= (others => '0');
+                else
+                    vgaRed <= pixel_byte_l(2 downto 0);
+                    vgaGreen <= pixel_byte_l(5 downto 3);
+                    vgaBlue <= pixel_byte_l(7 downto 6);
+                end if;
             end if;
             
             -- BLT-only cycle
