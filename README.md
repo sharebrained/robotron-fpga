@@ -29,6 +29,7 @@ These documents served me well during development of this project.
 
 * [Sean Riddle](http://seanriddle.com/) - Williams arcade machine information,
   including Robotron: 2084.
+
     * [Hardware overview](http://seanriddle.com/willhard.html)
     * [Memory map](http://seanriddle.com/memmap.gif)
     * [Processor and video timing](http://seanriddle.com/timing.html)
@@ -36,12 +37,14 @@ These documents served me well during development of this project.
 
 * [Robotron-2084](http://www.robotron-2084.co.uk/) - Williams arcade machine
   official documentation.
+
     * [Robotron schematics and instruction manuals](http://www.robotron-2084.co.uk/manualsrobotron.html)
-    * [Defender "later series" theory of operation](http://www.robotron-2084.co.uk/manualsdefender.html)
-      -- interesting because the Robotron and Defender hardware is quite
+    * [Defender "later series" theory of operation](http://www.robotron-2084.co.uk/manualsdefender.html),
+      interesting because the Robotron and Defender hardware is quite
       similar.
     
 * Documentation for various ICs in the original Robotron: 2084 machine.
+
     * [MC6809E microprocessor datasheet](http://www.classiccmp.org/dunfield/r/6809e.pdf)
     * [MC6809E microprocessor programming manual](http://www.classiccmp.org/dunfield/r/6809prog.pdf)
     * [DM9316 Synchronous 4-Bit Binary Counter](http://www.ti.com/product/dm9316)
@@ -55,9 +58,11 @@ These documents served me well during development of this project.
     
 * [Digilent](http://www.digilentinc.com/) - FPGA development boards and
   accessories.
+
     * [NEXYS2 FPGA development board](http://digilentinc.com/Products/Detail.cfm?NavPath=2,400,789&Prod=NEXYS2)
 
 * [Xilinx](http://www.xilinx.com/) - FPGA silicon and tools vendor.
+
     * [Spartan-3E documentation](http://www.xilinx.com/support/documentation/spartan-3e.htm)
 
 Requirements
