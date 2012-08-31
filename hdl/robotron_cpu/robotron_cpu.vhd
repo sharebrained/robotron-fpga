@@ -102,18 +102,15 @@ entity robotron_cpu is
         vgaGreen         : out   std_logic_vector(2 downto 0);
         vgaBlue          : out   std_logic_vector(1 downto 0);
         Hsync            : out   std_logic;
-        Vsync            : out   std_logic
+        Vsync            : out   std_logic;
 
         -- PS/2 connector
         --PS2C             : in    std_logic;
         --PS2D             : in    std_logic;
 
-        -- FX2 port
-        --PIO              : inout std_logic_vector(39 downto 0);
-
         -- 12-pin connectors
-        --JA               : in    std_logic_vector(7 downto 0);
-        --JB               : in    std_logic_vector(7 downto 0);
+        JA               : in    std_logic_vector(7 downto 0);
+        JB               : in    std_logic_vector(7 downto 0)
         --JC               : in    std_logic_vector(7 downto 0);
         --JD               : in    std_logic_vector(3 downto 0);
 
@@ -554,16 +551,31 @@ begin
     cmos_access <= std_match(address, "110011----------");
     
     SLAM <= not SW(6);
-    R_COIN <= not SW(5);
-    C_COIN <= not SW(4);
-    L_COIN <= not SW(3);
     H_S_RESET <= not SW(2);
     ADVANCE <= not SW(1);
     AUTO_UP <= not SW(0);
     
     PLAYER_1_START <= not BTN(3);
-    FIRE_LEFT_1 <= not BTN(2);
-    FIRE_RIGHT_1 <= not BTN(1);
+    PLAYER_2_START <= not BTN(2);
+    C_COIN <= not BTN(1);
+    
+    MOVE_UP_1 <= JA(0);
+    MOVE_DOWN_1 <= JA(1);
+    MOVE_LEFT_1 <= JA(2);
+    MOVE_RIGHT_1 <= JA(3);
+    FIRE_UP_1 <= JA(4);
+    FIRE_DOWN_1 <= JA(5);
+    FIRE_LEFT_1 <= JA(6);
+    FIRE_RIGHT_1 <= JA(7);
+    
+    MOVE_UP_2 <= JB(0);
+    MOVE_DOWN_2 <= JB(1);
+    MOVE_LEFT_2 <= JB(2);
+    MOVE_RIGHT_2 <= JB(3);
+    FIRE_UP_2 <= JB(4);
+    FIRE_DOWN_2 <= JB(5);
+    FIRE_LEFT_2 <= JB(6);
+    FIRE_RIGHT_2 <= JB(7);
     
     video_counter_value <= std_logic_vector(video_address(13 downto 8)) & "00";
     
