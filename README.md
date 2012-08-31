@@ -5,6 +5,8 @@ An FPGA implementation of the classic Robotron: 2084 video game. Both the
 sound board and CPU/interface boards are implemented, but are in separate
 sub-projects at the moment.
 
+![robotron-cpu on NEXYS2 FPGA board](http://github.com/sharebrained/robotron-fpga/raw/master/doc/photo/robotron-on-nexys2.jpg)
+
 The latest version of this repository can be found at
 https://github.com/sharebrained/robotron-fpga
 
@@ -126,3 +128,5 @@ Contact
 ShareBrained Technology, Inc.
 
 <http://www.sharebrained.com/>
+
+Jared Boone <jared@sharebrained.com>
