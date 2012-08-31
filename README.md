@@ -28,7 +28,7 @@ Documentation
 These documents served me well during development of this project.
 
 * [Sean Riddle](http://seanriddle.com/) - Williams arcade machine information,
-  including Robotron: 2084.
+    including Robotron: 2084.
 
     * [Hardware overview](http://seanriddle.com/willhard.html)
     * [Memory map](http://seanriddle.com/memmap.gif)
@@ -36,12 +36,12 @@ These documents served me well during development of this project.
     * [BLTter description and test code](http://seanriddle.com/blittest.html)
 
 * [Robotron-2084](http://www.robotron-2084.co.uk/) - Williams arcade machine
-  official documentation.
+    official documentation.
 
     * [Robotron schematics and instruction manuals](http://www.robotron-2084.co.uk/manualsrobotron.html)
     * [Defender "later series" theory of operation](http://www.robotron-2084.co.uk/manualsdefender.html),
-      interesting because the Robotron and Defender hardware is quite
-      similar.
+        interesting because the Robotron and Defender hardware is quite
+        similar.
     
 * Documentation for various ICs in the original Robotron: 2084 machine.
 
@@ -49,7 +49,7 @@ These documents served me well during development of this project.
     * [MC6809E microprocessor programming manual](http://www.classiccmp.org/dunfield/r/6809prog.pdf)
     * [DM9316 Synchronous 4-Bit Binary Counter](http://www.ti.com/product/dm9316)
     * National Semiconductor(?) DM7489 64-bit random access read/write memory
-      (no good reference)
+        (no good reference)
     * [Harris HM-7641 512 x 8 PROM](http://www.bitsavers.org/pdf/harris/_dataBooks/1978_Harris_Memory_Vol1.pdf) (page 2-35)
     * [Harris HM-6514 1024 x 4 CMOS RAM](http://www.bitsavers.org/pdf/harris/_dataBooks/1978_Harris_Memory_Vol1.pdf) (page 3-49)
     * [Mostek MK4116 16,384 x 1 bit dynamic RAM](http://hardware.speccy.org/datasheet/MK4116.pdf)
@@ -57,7 +57,7 @@ These documents served me well during development of this project.
     * [Various 74-series logic ICs](http://www.ti.com/lsds/ti/logic/home_overview.page)
     
 * [Digilent](http://www.digilentinc.com/) - FPGA development boards and
-  accessories.
+    accessories.
 
     * [NEXYS2 FPGA development board](http://digilentinc.com/Products/Detail.cfm?NavPath=2,400,789&Prod=NEXYS2)
 
