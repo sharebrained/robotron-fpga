@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --
--- Copyright 2009-2011 ShareBrained Technology, Inc.
+-- Copyright 2009-2013 ShareBrained Technology, Inc.
 --
 -- This file is part of robotron-fpga.
 --
@@ -27,74 +27,18 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
----- Uncomment the following library declaration if instantiating
----- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+entity robotron_sound is
+   port(
+      clk_fast    : in     STD_LOGIC;
+      clk_cpu     : in     STD_LOGIC;
+      reset       : in     STD_LOGIC;
+      pb          : in     STD_LOGIC_VECTOR (5 downto 0);
+      hand        : in     STD_LOGIC;
+      dac         : out    STD_LOGIC_VECTOR (7 downto 0)
+   );
+end robotron_sound;
 
-entity robotron is
-    Port ( CLK_50M_IN      : in     STD_LOGIC;
-           RST_IN          : in     STD_LOGIC;
-           PB_IN           : in     STD_LOGIC_VECTOR (5 downto 0);
-           HAND_IN         : in     STD_LOGIC;
-           STROBE_IN       : in     STD_LOGIC;
-           DAC_OUT         : out    STD_LOGIC_VECTOR (7 downto 0);
-           STATUS_OUT      : out    STD_LOGIC_VECTOR (7 downto 0);
-           BIT_OUT         : out    std_logic
-           );
-end robotron;
-
-architecture Behavioral of robotron is
-   
-   signal CLKDIV                    : std_logic_vector (23 downto 0);
-   
-   signal CLK                       : std_logic;
-   signal RST                       : std_logic;
-   
-   signal PB                        : std_logic_vector (5 downto 0);
-   signal HAND                      : std_logic;
-   signal DAC                       : std_logic_vector (7 downto 0);
-   
-   signal CPU_ADDRESS_OUT           : std_logic_vector (15 downto 0);
-   signal CPU_DATA_IN               : std_logic_vector (7 downto 0);
-   signal CPU_DATA_OUT              : std_logic_vector (7 downto 0);
-   signal CPU_RW                    : std_logic;
-   signal CPU_IRQ                   : std_logic;
-   signal CPU_VMA                   : std_logic;
-   signal CPU_HALT                  : std_logic;
-   signal CPU_HOLD                  : std_logic;
-   signal CPU_NMI                   : std_logic;
-   
-   signal ROM_CS                    : std_logic;
-   signal ROM_DATA_OUT              : std_logic_vector (7 downto 0);
-   
-   signal RAM_CS                    : std_logic;
-   signal RAM_RW                    : std_logic;
-   signal RAM_DATA_IN               : std_logic_vector (7 downto 0);
-   signal RAM_DATA_OUT              : std_logic_vector (7 downto 0);
-   
-   signal PIA_RW                    : std_logic;
-   signal PIA_CS                    : std_logic;
-   signal PIA_IRQA                  : std_logic;
-   signal PIA_IRQB                  : std_logic;
-   signal PIA_DATA_IN               : std_logic_vector (7 downto 0);
-   signal PIA_DATA_OUT              : std_logic_vector (7 downto 0);
-   signal PIA_CA1                   : std_logic;
-   signal PIA_CB1                   : std_logic;
-   signal PIA_CA2_I                 : std_logic;
-   signal PIA_CA2_O                 : std_logic;
-   signal PIA_CB2_I                 : std_logic;
-   signal PIA_CB2_O                 : std_logic;
-   signal PIA_PA_I                  : std_logic_vector (7 downto 0);
-   signal PIA_PA_O                  : std_logic_vector (7 downto 0);
-   signal PIA_PB_I                  : std_logic_vector (7 downto 0);
-   signal PIA_PB_O                  : std_logic_vector (7 downto 0);
-   
-   signal BCD_DEMUX_INPUT           : std_logic_vector (3 downto 0);
-   signal BCD_DEMUX_OUTPUT          : std_logic_vector (9 downto 0);
-   
-   signal SPEECH_CLOCK              : std_logic;
-   signal SPEECH_DATA               : std_logic;
+architecture Behavioral of robotron_sound is
    
    component cpu68
       port ( clk        : in     std_logic; 
@@ -162,45 +106,48 @@ architecture Behavioral of robotron is
              );
    end component;
    
+   signal CPU_ADDRESS_OUT           : std_logic_vector (15 downto 0);
+   signal CPU_DATA_IN               : std_logic_vector (7 downto 0);
+   signal CPU_DATA_OUT              : std_logic_vector (7 downto 0);
+   signal CPU_RW                    : std_logic;
+   signal CPU_IRQ                   : std_logic;
+   signal CPU_VMA                   : std_logic;
+   signal CPU_HALT                  : std_logic;
+   signal CPU_HOLD                  : std_logic;
+   signal CPU_NMI                   : std_logic;
+   
+   signal ROM_CS                    : std_logic;
+   signal ROM_DATA_OUT              : std_logic_vector (7 downto 0);
+   
+   signal RAM_CS                    : std_logic;
+   signal RAM_RW                    : std_logic;
+   signal RAM_DATA_IN               : std_logic_vector (7 downto 0);
+   signal RAM_DATA_OUT              : std_logic_vector (7 downto 0);
+   
+   signal PIA_RW                    : std_logic;
+   signal PIA_CS                    : std_logic;
+   signal PIA_IRQA                  : std_logic;
+   signal PIA_IRQB                  : std_logic;
+   signal PIA_DATA_IN               : std_logic_vector (7 downto 0);
+   signal PIA_DATA_OUT              : std_logic_vector (7 downto 0);
+   signal PIA_CA1                   : std_logic;
+   signal PIA_CB1                   : std_logic;
+   signal PIA_CA2_I                 : std_logic;
+   signal PIA_CA2_O                 : std_logic;
+   signal PIA_CB2_I                 : std_logic;
+   signal PIA_CB2_O                 : std_logic;
+   signal PIA_PA_I                  : std_logic_vector (7 downto 0);
+   signal PIA_PA_O                  : std_logic_vector (7 downto 0);
+   signal PIA_PB_I                  : std_logic_vector (7 downto 0);
+   signal PIA_PB_O                  : std_logic_vector (7 downto 0);
+   
+   signal BCD_DEMUX_INPUT           : std_logic_vector (3 downto 0);
+   signal BCD_DEMUX_OUTPUT          : std_logic_vector (9 downto 0);
+   
+   signal SPEECH_CLOCK              : std_logic;
+   signal SPEECH_DATA               : std_logic;
+
 begin
-   
-   RST <= RST_IN;
-   DAC_OUT <= DAC;
-   
-   process (STROBE_IN)
-   begin
-      if (STROBE_IN = '1') then
-         PB <= PB_IN;
-         HAND <= HAND_IN;
-      else
-         PB <= "111111";
-         HAND <= '1';
-      end if;
-   end process;
-   
-   process (CLK_50M_IN, RST)
-   begin
-      if rising_edge(CLK_50M_IN) then
-         if (RST = '1') then
-            CLKDIV <= "000000000000000000000000";
-         else
-            CLKDIV <= CLKDIV + 1;
-         end if;
-      end if;   
-   end process;
-   
-   process (CLK, CLKDIV)
-   begin
-      if rising_edge(CLK_50M_IN) then
-         if CLKDIV(7 downto 0) >= DAC then
-            BIT_OUT <= '1';
-         else
-            BIT_OUT <= '0';
-         end if;
-      end if;
-   end process;
-   
-   CLK <= CLKDIV(5);
    
    CPU_HALT <= '0';
    CPU_HOLD <= '0';
@@ -209,18 +156,16 @@ begin
    SPEECH_CLOCK <= '0';
    SPEECH_DATA <= '0';
    
-   STATUS_OUT(7 downto 0) <= RST & CLKDIV(23) & HAND & PB(0) & PIA_PA_O(3 downto 0);
-   
    CPU : cpu68
-      port map (clk => CLK,
-                data_in(7 downto 0) => CPU_DATA_IN(7 downto 0),
+      port map (clk => clk_cpu,
+                data_in => CPU_DATA_IN,
                 halt => CPU_HALT,
                 hold => CPU_HOLD,
                 irq => CPU_IRQ,
                 nmi => CPU_NMI,
-                rst => RST,
-                address(15 downto 0) => CPU_ADDRESS_OUT(15 downto 0),
-                data_out(7 downto 0) => CPU_DATA_OUT(7 downto 0),
+                rst => reset,
+                address => CPU_ADDRESS_OUT,
+                data_out => CPU_DATA_OUT,
                 rw => CPU_RW,
                 test_alu => open,
                 test_cc => open,
@@ -240,8 +185,8 @@ begin
    end process;
    
    RAM : m6810
-      port map (clk => CLK,
-                rst => RST,
+      port map (clk => clk_cpu,
+                rst => reset,
                 address   => CPU_ADDRESS_OUT(6 downto 0),
                 cs => RAM_CS,
                 rw => RAM_RW,
@@ -258,10 +203,10 @@ begin
       port map (addr => CPU_ADDRESS_OUT(1 downto 0),
                 ca1 => PIA_CA1,
                 cb1 => PIA_CB1,
-                clk => CLK,
+                clk => clk_cpu,
                 cs => PIA_CS,
                 data_in => PIA_DATA_IN,
-                rst => RST,
+                rst => reset,
                 rw => PIA_RW,
                 data_out=> PIA_DATA_OUT,
                 irqa => PIA_IRQA,
@@ -278,7 +223,7 @@ begin
    
    PIA_CA1 <= '1';
    PIA_CA2_I <= SPEECH_DATA;
-   PIA_CB1 <= not (HAND and PB(5) and PB(4) and PB(3) and PB(2) and PB(1) and PB(0));
+   PIA_CB1 <= not (HAND and pb(5) and pb(4) and pb(3) and pb(2) and pb(1) and pb(0));
    PIA_CB2_I <= SPEECH_CLOCK;
    PIA_CS <= (not (BCD_DEMUX_OUTPUT(0) and BCD_DEMUX_OUTPUT(8)))
               and CPU_ADDRESS_OUT(10)
@@ -286,16 +231,16 @@ begin
    PIA_DATA_IN <= CPU_DATA_OUT;
    PIA_RW <= CPU_RW;
    PIA_PA_I <= "00000000";
-   DAC <= PIA_PA_O;
-   PIA_PB_I(5 downto 0) <= PB(5 downto 0);
+   dac <= PIA_PA_O;
+   PIA_PB_I(5 downto 0) <= pb(5 downto 0);
    PIA_PB_I(6) <= '0';
    PIA_PB_I(7) <= '0';
    
    ROM : rom_snd
       port map (addr => CPU_ADDRESS_OUT(11 downto 0),
-                clk => CLK,
+                clk => clk_cpu,
                 cs => ROM_CS,
-                rst => RST,
+                rst => reset,
                 data => ROM_DATA_OUT);
    
    ROM_CS <= (not BCD_DEMUX_OUTPUT(7))
@@ -308,4 +253,3 @@ begin
    BCD_DEMUX_INPUT <= (not CPU_ADDRESS_OUT(15)) & CPU_ADDRESS_OUT(14 downto 12);
 
 end Behavioral;
-
