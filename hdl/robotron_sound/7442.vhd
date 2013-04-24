@@ -32,17 +32,17 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity logic7447 is
+entity logic7442 is
     Port (  input    : in     std_logic_vector (3 downto 0);
             output   : out    std_logic_vector (9 downto 0)
             );
-end logic7447;
+end logic7442;
 
-architecture rtl of logic7447 is
+architecture rtl of logic7442 is
 
 begin
    
-   logic7447 : process(input)
+   logic7442 : process(input)
    begin
       case input is
       when "0000" =>
