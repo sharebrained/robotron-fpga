@@ -24,11 +24,7 @@
 
 library IEEE;
    use IEEE.STD_LOGIC_1164.ALL;
-   use IEEE.STD_LOGIC_ARITH.ALL;
-   use IEEE.STD_LOGIC_UNSIGNED.ALL;
-
-library UNISIM;
-   use UNISIM.VComponents.all;
+   use IEEE.NUMERIC_STD.ALL;
 
 entity m6810 is
     Port ( clk       : in     std_logic;
@@ -41,25 +37,29 @@ entity m6810 is
 end m6810;
 
 architecture rtl of m6810 is
+	subtype word_t is std_logic_vector(7 downto 0);
+	type memory_t is array(127 downto 0) of word_t;
+	
+	signal ram : memory_t;
+	signal address_reg : std_logic_vector(6 downto 0);
+	
    signal we : std_logic;
 begin
-   
-  ROM: RAMB16_S9
-    port map ( do                => data_out,
-               addr(6 downto 0)  => address,
-               addr(10 downto 7) => "0000",
-               clk               => clk,
-               di                => data_in,
-               dip(0)            => '0',
-               en                => cs,
-               ssr               => rst,
-               we                => we
-               );
 
-   m6810 : process ( rw )
-   begin
-      we <= not rw;
-   end process;
+	process(clk)
+	begin
+		if( rising_edge(clk) ) then
+			if( we = '1' and cs = '1' ) then
+				ram(to_integer(unsigned(address))) <= data_in;
+			end if;
+			
+			address_reg <= address;
+		end if;
+	end process;
+	
+	we <= not rw;
    
+	data_out <= ram(to_integer(unsigned(address)));
+
 end architecture rtl;
 
