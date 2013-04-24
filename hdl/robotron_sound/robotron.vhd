@@ -156,7 +156,7 @@ architecture Behavioral of robotron is
              );
    end component;
    
-   component logic7447
+   component logic7442
       port ( input      : in     std_logic_vector (3 downto 0);
              output     : out    std_logic_vector (9 downto 0)
              );
@@ -301,7 +301,7 @@ begin
    ROM_CS <= (not BCD_DEMUX_OUTPUT(7))
               and CPU_VMA;
    
-   BCD_DEMUX : logic7447
+   BCD_DEMUX : logic7442
       port map (input => BCD_DEMUX_INPUT,
                 output => BCD_DEMUX_OUTPUT);
    
